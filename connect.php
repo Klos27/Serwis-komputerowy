@@ -3,7 +3,7 @@
 	$host = "localhost";
 	$db_user = "javaparking";
 	$db_password = "javaparking";
-	$db_name = "osadnicy";
+	$db_name = "serwis_komp";
 	
 ?>
 <!-- 

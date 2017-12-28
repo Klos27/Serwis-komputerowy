@@ -27,22 +27,18 @@
 		echo "<br />";
 		echo $haslo;
 		
-		$sql = "SELECT * FROM uzytkownicy WHERE user='$login' AND pass='$haslo'";
+		$sql = "SELECT * FROM klienci WHERE login='$login' AND haslo='$haslo'";
 		
-		if($rezultat = @$polaczenie->query(sprintf("SELECT * FROM uzytkownicy WHERE user='%s' AND pass='%s'", mysqli_real_escape_string($polaczenie,$login), mysqli_real_escape_string($polaczenie,$haslo)))){	// jeśli zapytanie nie będzie błędne, mysqli broni prze dwstzrykwianiem sql
+		if($rezultat = @$polaczenie->query(sprintf($sql, mysqli_real_escape_string($polaczenie,$login), mysqli_real_escape_string($polaczenie,$haslo)))){	// jeśli zapytanie nie będzie błędne, mysqli broni prze wstzrykwianiem sql
 			$ilu_userow = $rezultat->num_rows;
 			if($ilu_userow>0){
 				$wiersz = $rezultat->fetch_assoc();	// zrobi nam tablice o indexach takich jak w tabeli sql
 				
-				$_SESSION['user'] = $wiersz['user'];
-				$_SESSION['drewno'] = $wiersz['drewno'];
-				$_SESSION['kamien'] = $wiersz['kamien'];
-				$_SESSION['zboze'] = $wiersz['zboze'];
+				$_SESSION['user'] = $wiersz['login'];
 				$_SESSION['email'] = $wiersz['email'];
-				$_SESSION['dnipremium'] = $wiersz['dnipremium'];
 				
 				$_SESSION['zalogowany'] = true;
-				$_SESSION['id'] = $wiersz['id'];
+				$_SESSION['id'] = $wiersz['id_klienta'];
 				
 				unset($_SESSION['blad']);
 				
