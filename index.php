@@ -14,9 +14,9 @@
 	<title>SBD - Serwis Komputerowy</title>
 </head>
 <body>
-	<h1>SBD - Serwis Komputerowy</h1>
+	<a href="index.php"><img src="img/Logo.png" alt="Strona Główna"/></a><br />
 	
-	<form action="zaloguj.php" method="post">
+	<form action="php-zaloguj.php" method="post">
 	Login: <br /> <input type="text" name="login" /> <br />
 	Hasło: <br /> <input type="password" name="haslo" /> <br />
 	<input type="submit" value="Zaloguj się" />

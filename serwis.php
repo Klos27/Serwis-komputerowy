@@ -15,13 +15,15 @@
 	<title>SBD - Serwis Komputerowy</title>
 </head>
 <body>
+	<a href="index.php"><img src="img/Logo.png" alt="Strona Główna"/></a><br />
+	
 	
 	<?php
 	
 	echo "<p>Witaj ".$_SESSION['user']."!</p>";
 	echo "<p><b>Email:</b>  ".$_SESSION['email'];
 	echo "     ";
-	echo '<a href="wyloguj.php">[ Wyloguj się ]</a>';
+	echo '<a href="php-wyloguj.php">[ Wyloguj się ]</a>';
 	echo "<br /><br />";
 	
 	//PODSTRONA
