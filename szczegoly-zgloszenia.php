@@ -20,6 +20,15 @@
 		
 			$user = $_SESSION['id'];
 			$zgloszenie = $_GET['zgloszenie'];
+				
+			$min = 1;
+			$max = 2147483647; 
+
+			if (filter_var($zgloszenie, FILTER_VALIDATE_INT, array("options" => array("min_range"=>$min, "max_range"=>$max))) === false) {
+				echo("NIEPOPRAWNY NUMER ZGŁOSZENIA: ");
+				echo $zgloszenie;
+				exit();
+			}		
 		
             ini_set("display_errors", 0);
             require_once "setup-connect.php";
