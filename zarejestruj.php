@@ -8,7 +8,7 @@
 	$zmienna=addslashes($zmienna);
 	}
 	
-	
+	require_once("setup-recaptcha.php");
 	
 	
 	// formularz
@@ -83,15 +83,13 @@
 		$wojewodztwo = $_POST['wojewodztwo'];
 			
 		//TODO dodać weryfikację danych z formularza
-			
-			
-			
-			
-			
-		// Bot or not?
-		$sekret = "6LcL8z4UAAAAANtunrfwJxHZAJ1B3YoOLMqaD4gf";
+
 		
-		$sprawdz = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$sekret.'&response='.$_POST['g-recaptcha-response']);
+		
+		
+		// Bot or not?
+		
+		$sprawdz = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$recaptcha_secret.'&response='.$_POST['g-recaptcha-response']);
 		
 		$odpowiedz = json_decode($sprawdz);
 		
@@ -375,7 +373,7 @@
 		}
 		?>
 		<br />
-		<div class="g-recaptcha" data-sitekey="6LcL8z4UAAAAAFm0ulO3pL3viEN9CaayQw0iq3nG"></div>
+		<div class="g-recaptcha" data-sitekey="<?php echo $recaptha_public; ?>"></div>
 		<br />
 		<?php
 		if(isset($_SESSION['e_captcha'])){
