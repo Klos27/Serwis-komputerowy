@@ -71,7 +71,7 @@ END;
 		$a_status = $wiersz['STATUS'];	
 		
 echo<<<END
-<td width="100" align="center">'$a_naprawa'</td>
+<td width="100" align="center">$a_naprawa</td>
 <td width="100" align="center">$a_klient</td>
 <td width="100" align="center">$a_komputer</td>
 <td width="100" align="center">$a_status</td>
