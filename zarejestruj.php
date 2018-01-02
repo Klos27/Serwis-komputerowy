@@ -173,6 +173,7 @@
 						else{
 							throw new Exception(oci_error());
 						}
+						oci_free_statement($stid);
 					}
 					
 					

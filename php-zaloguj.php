@@ -45,9 +45,9 @@
 				if(password_verify($haslo, $wiersz['HASLO'])){
 					$_SESSION['user'] = $wiersz['LOGIN'];
 					$_SESSION['email'] = $wiersz['EMAIL'];
-					
-					$_SESSION['zalogowany'] = true;
 					$_SESSION['id'] = $wiersz['ID_KLIENTA'];
+					$_SESSION['zalogowany'] = true;
+					
 					
 					unset($_SESSION['blad']);
 					
