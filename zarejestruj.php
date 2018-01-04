@@ -122,7 +122,7 @@
 		
 		// if($wszystko_OK ==true){
 			try{
-				$polaczenie = oci_connect($db_user,$db_password,$host);
+				$polaczenie = oci_connect($db_user,$db_password,$db_host, $db_lang);
 				
 				if (!$polaczenie){
 					// throw new Exception(mysqli_connect_errno());

@@ -25,7 +25,7 @@
             // ini_set("display_errors", 0);
             require_once "setup-connect.php";
 			try{
-				$polaczenie = oci_connect($db_user,$db_password,$host);
+				$polaczenie = oci_connect($db_user,$db_password,$db_host, $db_lang);
 				
 				if (!$polaczenie){
 					// throw new Exception(mysqli_connect_errno());
