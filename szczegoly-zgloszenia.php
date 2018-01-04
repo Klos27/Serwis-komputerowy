@@ -33,7 +33,7 @@
             ini_set("display_errors", 0);
             require_once "setup-connect.php";
 			try{
-				$polaczenie = oci_connect($db_user,$db_password,$db_host, $db_lang);
+				$polaczenie = oci_connect($db_user, $db_password, $db_host, $db_lang);
 				
 				if (!$polaczenie){
 					$m = oci_error();
@@ -63,7 +63,7 @@ echo<<<END
 <td width="100" align="center" bgcolor="e5e5e5">ID Klienta</td>
 <td width="100" align="center" bgcolor="e5e5e5">ID Komputera</td>
 <td width="100" align="center" bgcolor="e5e5e5">Status</td>
-<td width="100" align="center" bgcolor="e5e5e5">Opis Usterki</td>
+<td width="500" align="center" bgcolor="e5e5e5">Opis Usterki</td>
 </tr><tr>
 END;
 
@@ -78,7 +78,7 @@ echo<<<END
 <td width="100" align="center">$a_klient</td>
 <td width="100" align="center">$a_komputer</td>
 <td width="100" align="center">$a_status</td>
-<td width="100" align="center">$a_opis</td>
+<td width="500" align="center">$a_opis</td>
 </tr><tr>
 END;
 echo '</tr></table>';
@@ -239,6 +239,6 @@ echo '</tr></table>';
 						
 			
 		?>
-
+<br /><br /><br /><br /><br /><br />
 	</body>
 </html>

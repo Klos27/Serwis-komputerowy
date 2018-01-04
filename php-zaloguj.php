@@ -9,7 +9,7 @@
 		
 	require_once "setup-connect.php";
 	
-	$polaczenie = oci_connect($db_user,$db_password,$db_host, $db_lang);
+	$polaczenie = oci_connect($db_user, $db_password, $db_host, $db_lang);
 	
 	if(!$polaczenie){
 		$m = oci_error();

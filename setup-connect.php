@@ -4,14 +4,6 @@
 	$db_user = "SERWIS_KOMP";		// nazwa użytkownika
 	$db_password = "sbdserwis";		// haslo użytkownika
 	$db_name = "SERWIS_KOMP";		// nazwa bazy danych
-	$db_lang = 'AL32UTF8';
+	$db_lang = 'UTF8';			// Kodowanie w bazie danych ( opcja2: 'AL32UTF8')
 	
 ?>
-<!-- 
-$host = "localhost";
-	$db_user = "root";
-	$db_password = "";
-	$db_name = "osadnicy";
-
-
- -->

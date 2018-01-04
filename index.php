@@ -16,7 +16,7 @@
 <body>
 	<a href="index.php"><img src="img/Logo.png" alt="Strona Główna"/></a><br />
 	
-	<form action="php-zaloguj.php" method="post">
+	<form action="php-zaloguj.php" method="post" accept-charset="UTF-8">
 	Login: <br /> <input type="text" name="login" /> <br />
 	Hasło: <br /> <input type="password" name="haslo" /> <br />
 	<input type="submit" value="Zaloguj się" />

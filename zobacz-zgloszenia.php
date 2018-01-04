@@ -56,7 +56,7 @@ echo<<<END
 <td width="100" align="center" bgcolor="e5e5e5">ID Klienta</td>
 <td width="100" align="center" bgcolor="e5e5e5">ID Komputera</td>
 <td width="100" align="center" bgcolor="e5e5e5">Status</td>
-<td width="100" align="center" bgcolor="e5e5e5">Opis Usterki</td>
+<td width="500" align="center" bgcolor="e5e5e5">Opis Usterki</td>
 <td width="100" align="center" bgcolor="e5e5e5">Zobacz szczegóły</td>
 </tr><tr>
 END;
@@ -75,7 +75,7 @@ echo<<<END
 <td width="100" align="center">$a_klient</td>
 <td width="100" align="center">$a_komputer</td>
 <td width="100" align="center">$a_status</td>
-<td width="100" align="center">$a_opis</td>
+<td width="500" align="center">$a_opis</td>
 <td width="100" align="center"><a href="szczegoly-zgloszenia.php?zgloszenie=$a_naprawa">Zobacz</a></td>
 </tr><tr>
 END;
@@ -100,6 +100,6 @@ END;
 			
 		?>
 </tr></table>
-
+<br /><br /><br /><br /><br /><br />
 	</body>
 </html>
