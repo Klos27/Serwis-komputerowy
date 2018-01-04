@@ -55,7 +55,13 @@
 					// $stid->oci_close();	//$rezultat->free(); , $rezultat->free_result();
 					oci_free_statement($stid);
 					header('Location: serwis.php');
+				}else {
+				$_SESSION['blad'] = '<span style="color:red">Nieprawidłowy login lub hasło!</span>';
+				header('Location: index.php');
+				
+				
 				}
+				
 			} else {
 				$_SESSION['blad'] = '<span style="color:red">Nieprawidłowy login lub hasło!</span>';
 				header('Location: index.php');
@@ -63,6 +69,11 @@
 				
 			}
 			
+		}else {
+			$_SESSION['blad'] = '<span style="color:red">Przepraszamy, nie udało się połączyć z bazą danych, spróbuj ponownie później</span>';
+				header('Location: index.php');
+				
+				
 		}
 		
 		oci_close($polaczenie);
