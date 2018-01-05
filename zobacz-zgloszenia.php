@@ -56,6 +56,8 @@ echo<<<END
 <td width="100" align="center" bgcolor="e5e5e5">ID Klienta</td>
 <td width="100" align="center" bgcolor="e5e5e5">ID Komputera</td>
 <td width="100" align="center" bgcolor="e5e5e5">Status</td>
+<td width="100" align="center" bgcolor="e5e5e5">Data dodania</td>
+<td width="100" align="center" bgcolor="e5e5e5">Data zakończenia</td>
 <td width="500" align="center" bgcolor="e5e5e5">Opis Usterki</td>
 <td width="100" align="center" bgcolor="e5e5e5">Zobacz szczegóły</td>
 </tr><tr>
@@ -68,13 +70,17 @@ END;
 		$a_klient = $wiersz['ID_KLIENTA'];
 		$a_komputer = $wiersz['ID_KOMPUTERA'];
 		$a_opis = $wiersz['OPIS_USTERKI'];
-		$a_status = $wiersz['STATUS'];	
+		$a_status = $wiersz['STATUS'];
+		$a_data_start = $wiersz['DATA_ROZPOCZECIA'];	
+		$a_data_koniec = $wiersz['DATA_ZAKONCZENIA'];
 		
 echo<<<END
 <td width="100" align="center">$a_naprawa</td>
 <td width="100" align="center">$a_klient</td>
 <td width="100" align="center">$a_komputer</td>
 <td width="100" align="center">$a_status</td>
+<td width="100" align="center">$a_data_start</td>
+<td width="100" align="center">$a_data_koniec</td>
 <td width="500" align="center">$a_opis</td>
 <td width="100" align="center"><a href="szczegoly-zgloszenia.php?zgloszenie=$a_naprawa">Zobacz</a></td>
 </tr><tr>
