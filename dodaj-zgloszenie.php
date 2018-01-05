@@ -93,7 +93,7 @@
 		
 				
 		// SQL INJECTION
-		$komp_opis = db_escape_mimic(htmlentities($komp_opis));
+		$komp_opis = db_escape_mimic($komp_opis);
 		$_SESSION['form_komp_opis'] = $komp_opis;
 		
 		require_once("setup-connect.php");
