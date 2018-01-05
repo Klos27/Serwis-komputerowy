@@ -93,7 +93,8 @@
 		
 				
 		// SQL INJECTION
-		$komp_opis = db_escape_mimic($komp_opis);
+		// $komp_opis = db_escape_mimic($komp_opis);
+		$komp_opis = htmlentities($komp_opis, ENT_QUOTES, "UTF-8");
 		$_SESSION['form_komp_opis'] = $komp_opis;
 		
 		require_once("setup-connect.php");

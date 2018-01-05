@@ -3,9 +3,9 @@
 	session_start();
 	
 	function filtruj($zmienna){
-	$zmienna=trim($zmienna);
-	$zmienna=htmlspecialchars($zmienna);
-	$zmienna=addslashes($zmienna);
+		$zmienna=trim($zmienna);
+		$zmienna=htmlspecialchars($zmienna);
+		$zmienna=addslashes($zmienna);
 	}
 	
 	require_once("setup-recaptcha.php");
@@ -129,11 +129,19 @@
 		
 		
 		// SQL INJECTION
-		$email = htmlspecialchars($email);
-		$imie = htmlspecialchars($imie);
-		$nazwisko = htmlspecialchars($nazwisko);
-		$adres = htmlspecialchars($adres);
-		$miasto = htmlspecialchars($miasto);
+		// $email = htmlspecialchars($email);
+		// $imie = htmlspecialchars($imie);
+		// $nazwisko = htmlspecialchars($nazwisko);
+		// $adres = htmlspecialchars($adres);
+		// $miasto = htmlspecialchars($miasto);
+		
+		$email = htmlentities($email, ENT_QUOTES, "UTF-8");
+		$imie = htmlentities($imie, ENT_QUOTES, "UTF-8");
+		$nazwisko = htmlentities($nazwisko, ENT_QUOTES, "UTF-8");
+		$adres = htmlentities($adres, ENT_QUOTES, "UTF-8");
+		$miasto = htmlentities($miasto, ENT_QUOTES, "UTF-8");
+		
+		
 		
 		if(isset($_POST['regulamin'])) $_SESSION['form_regulamin'] = true;	
 	

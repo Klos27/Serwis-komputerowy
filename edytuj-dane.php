@@ -3,13 +3,14 @@
 	session_start();
 	
 	function filtruj($zmienna){
-	$zmienna=trim($zmienna);
-	$zmienna=htmlspecialchars($zmienna);
-	$zmienna=addslashes($zmienna);
+		$zmienna=trim($zmienna);
+		$zmienna=htmlspecialchars($zmienna);
+		$zmienna=addslashes($zmienna);
 	}	
 	// pobierz dane użytkownika
 	
 	require_once("setup-connect.php");
+					
 	try{
 				$polaczenie = oci_connect($db_user, $db_password, $db_host, $db_lang);
 				
@@ -20,7 +21,7 @@
 					echo"Error: ".$m['message'] . " Opis: ". $polaczenie->connect_error;
 				}
 				else{
-					// czy email już istnieje?
+					// pobierz dane z bazy
 					$user = $_SESSION['id'];
 					$stid = oci_parse($polaczenie, "Select * FROM klienci WHERE ID_KLIENTA='$user'");
 					$r = oci_execute($stid);
@@ -43,32 +44,15 @@
 				oci_close($polaczenie);
 			}
 	catch(Exception $e){
-		echo '<span style="color:red;">Błąd serwera! Przepraszamy za niedogodności i prosimy o rejestrację w innym terminie!</span>';
+		echo '<span style="color:red;">Błąd serwera! Przepraszamy za niedogodności i prosimy spróbowac ponownie później!</span>';
 		// echo '<br />Info dev: '.$e;
-	}				
-	
-	
-	
-	
-	
+	}
+
 	// formularz
 	if (isset($_POST['email']))
 	{
 		//Udana walidacja
 		$wszystko_OK = true;
-		
-		//Sprawdź login
-		$login = $_POST['login'];	//3 do 20znaków
-		
-		//Sprawdzenie długości loginu
-		if((strlen($login)<3) || (strlen($login)>20)){
-			$wszystko_OK = false;
-			$_SESSION['e_login']="login musi posiadać od 3 do 20 znaków!";
-		}
-		if(ctype_alnum($login) == false){
-			$wszystko_OK=false;
-			$_SESSION['e_login']="login może składać się tylko z cyfr i liter( bez polskich znaków)";
-		}
 		
 		// Sprawdź email
 		
@@ -80,28 +64,7 @@
 			$_SESSION['e_email']="Podaj poprawny adres email!";
 			
 		}
-			
-		// Sprawdź hasła
 		
-		$haslo1 = $_POST['haslo1'];
-		$haslo2 = $_POST['haslo2'];
-			
-		if((strlen($haslo1)<5) || (strlen($haslo1)>20)){
-			$wszystko_OK=false;
-			$_SESSION['e_haslo']="Hasło musi posiadać od 5 do 20 znaków!";
-		}		
-		if($haslo1 != $haslo2){
-			$wszystko_OK=false;
-			$_SESSION['e_haslo']="Podane hasła nie są identyczne!";
-		}
-			
-		$haslo_hash = password_hash($haslo1, PASSWORD_DEFAULT);
-		
-		// czy zaakceptowano regulamin
-		if(!isset($_POST['regulamin'])){
-			$wszystko_OK=false;
-			$_SESSION['e_regulamin']="Przeczytaj i zaakceptuj regulamin!";
-		}		
 		// dane osobowe
 		
 		// sprawdź imie
@@ -144,11 +107,7 @@
 			
 		// Zapamietaj wprowadzone dane
 		
-		$_SESSION['form_login'] = $login;
-		$_SESSION['form_email'] = $email;
-		$_SESSION['form_haslo1'] = $haslo1;
-		$_SESSION['form_haslo2'] = $haslo2;
-		
+		$_SESSION['form_email'] = $email;		
 		$_SESSION['form_imie'] = $imie;
 		$_SESSION['form_nazwisko'] = $nazwisko;
 		$_SESSION['form_adres'] = $adres;
@@ -158,14 +117,18 @@
 		
 		
 		// SQL INJECTION
-		$email = htmlspecialchars($email);
-		$imie = htmlspecialchars($imie);
-		$nazwisko = htmlspecialchars($nazwisko);
-		$adres = htmlspecialchars($adres);
-		$miasto = htmlspecialchars($miasto);
-		
-		if(isset($_POST['regulamin'])) $_SESSION['form_regulamin'] = true;	
-	
+		// $email = htmlspecialchars($email);
+		// $imie = htmlspecialchars($imie);
+		// $nazwisko = htmlspecialchars($nazwisko);
+		// $adres = htmlspecialchars($adres);
+		// $miasto = htmlspecialchars($miasto);
+			
+		$email = htmlentities($email, ENT_QUOTES, "UTF-8");
+		$imie = htmlentities($imie, ENT_QUOTES, "UTF-8");
+		$nazwisko = htmlentities($nazwisko, ENT_QUOTES, "UTF-8");
+		$adres = htmlentities($adres, ENT_QUOTES, "UTF-8");
+		$miasto = htmlentities($miasto, ENT_QUOTES, "UTF-8");	
+			
 		require_once("setup-connect.php");
 		
 		mysqli_report(MYSQLI_REPORT_STRICT);	// nie wyświetla błędów serwera, chroni nasze dane bazy przed użytkownikami
@@ -181,8 +144,8 @@
 					echo"Error: ".$m['message'] . " Opis: ". $polaczenie->connect_error;
 				}
 				else{
-					// czy email już istnieje?
-					$stid = oci_parse($polaczenie, "Select ID_KLIENTA FROM klienci WHERE email='$email'");
+					// czy email już istnieje u innego uzytkownika
+					$stid = oci_parse($polaczenie, "Select ID_KLIENTA FROM klienci WHERE email='$email' and ID_KLIENTA != '$user'");
 					$r = oci_execute($stid);
 					
 					if(!$r) throw new Exception(oci_error());
@@ -191,33 +154,31 @@
 					
 					if($wiersz != false){
 						$wszystko_OK=false;
-						$_SESSION['e_email']="Istnieje już konto przypisane do tego adresu email!";
-					}
-					oci_free_statement($stid);
-					
-					// czy login już istnieje?
-					$stid = oci_parse($polaczenie, "Select ID_KLIENTA FROM klienci WHERE login='$login'");
-					$r = oci_execute($stid);
-					
-					if(!$r) throw new Exception(oci_error());
-					
-					if($wiersz != false){
-						$wszystko_OK=false;
-						$_SESSION['e_login']="Istnieje już konto z takim loginem! Wybierz inny";
+						$_SESSION['e_email']="Inny użytkownik już używa tego adresu email!";
 					}
 					oci_free_statement($stid);
 					
 					if($wszystko_OK ==true){
 						
-						$stid = oci_parse($polaczenie, "INSERT INTO klienci VALUES(NULL, '$imie', '$nazwisko', '$adres', '$kodp', '$miasto', '$wojewodztwo', '$haslo_hash', '$login', '$email')");
+						$stid = oci_parse($polaczenie, "UPDATE klienci SET IMIE = '$imie', NAZWISKO = '$nazwisko', ADRES = '$adres', KOD_POCZTOWY = '$kodp', MIASTO ='$miasto', WOJEWODZTWO = '$wojewodztwo', EMAIL = '$email' where ID_KLIENTA = '$user'");
+						
+						
+						
 						$r = oci_execute($stid);
 					
 						if($r == true){
-							$_SESSION['rejestracja']=true;
-							header('Location: witamy.php');
+							$_SESSION['zmiana_wynik']= "DANE W BAZIE ZOSTAŁY ZMIENIONE<br />";
+							$dane_imie = $imie;
+							$dane_nazwisko = $nazwisko;
+							$dane_adres = $adres;
+							$dane_kodp = $kodp;
+							$dane_miasto = $miasto;
+							$dane_wojewodztwo = $wojewodztwo;
+							$dane_email = $email;
 						}
 						else{
-							throw new Exception(oci_error());
+							$_SESSION['zmiana_wynik']= "NIE UDAŁO SIĘ ZMIENIĆ DANYCH, SPRÓBUJ PONOWNIE PÓŹNIEJ<br />";
+							
 						}
 						oci_free_statement($stid);
 					}
@@ -233,7 +194,21 @@
 			}
 		}
 	}
-
+	else {
+		$_SESSION['form_email'] = $dane_email;
+		
+		$_SESSION['form_imie'] = $dane_imie;
+		$_SESSION['form_nazwisko'] = $dane_nazwisko;
+		$_SESSION['form_adres'] = $dane_adres;
+		$_SESSION['form_kodp'] = $dane_kodp;
+		$_SESSION['form_miasto'] = $dane_miasto;
+		$_SESSION['form_wojewodztwo'] = $dane_wojewodztwo;
+	}
+	
+	
+	
+	
+	
 ?>
 
 <!DOCTYPE HTML>
@@ -374,6 +349,8 @@ END;
 		<input type="submit" value="Zapisz dane" />
 	
 	</form>
+	<br /><br />
+	<?php if(isset($_SESSION['zmiana_wynik'])) echo $_SESSION['zmiana_wynik']; unset($_SESSION['zmiana_wynik']);?>
 	
 
 
