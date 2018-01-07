@@ -1,0 +1,884 @@
+--------------------------------------------------------
+-- SKRYPT NALE¯Y WKLEIÆ PO ZALOGOWANIU DO BAZY JAKO U¯YTKOWNIK SERIWS_KOMP
+-- Je¿eli nie posiadamy takiego u¿ytkownika to nale¿y najpeirw uruchomiæ plik SQL_CREATE_USER jako u¿ytkownik system
+-- Nastêpnie wykonaj ten skrypt w celu dodania tabel do u¿ytkownika
+--------------------------------------------------------
+DROP TABLE "SERWIS_KOMP"."CENNIK" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."KATEGORIE" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."KLIENCI" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."KOMPUTERY" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."MAGAZYN" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."PLATNOSCI" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."PRACOWNICY" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."PRODUCENCI" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."UMOWY" cascade constraints;
+DROP TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" cascade constraints;
+DROP SEQUENCE "SERWIS_KOMP"."KLIENCI_ID_KLIENTA_SEQ";
+DROP SEQUENCE "SERWIS_KOMP"."KOMPUTERY_ID_KOMPUTERA_SEQ";
+DROP SEQUENCE "SERWIS_KOMP"."PLATNOSCI_ID_FAKTURY_SEQ";
+DROP SEQUENCE "SERWIS_KOMP"."PRACE_NAPRAWCZE_ID_PRACY_SEQ";
+DROP SEQUENCE "SERWIS_KOMP"."PRACOWNICY_ID_PRACOWNIKA_SEQ";
+DROP SEQUENCE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY_ID_NAPRAWY_";
+DROP SYNONYM "PUBLIC"."DUAL";
+--------------------------------------------------------
+-- CENNIK
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."CENNIK" 
+   (	"ID_USLUGI" NUMBER(10,0), 
+	"NAZWA_USLUGI" VARCHAR2(255 CHAR), 
+	"CENA" FLOAT(126)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+-- CZESCI_ZAMIENNE
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" 
+   (	"ID_CZESCI" NUMBER(10,0), 
+	"ID_KATEGORII" NUMBER(10,0), 
+	"ID_PRODUCENTA" NUMBER(10,0), 
+	"MODEL" VARCHAR2(255 CHAR), 
+	"CENA" FLOAT(126)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  KATEGORIE
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."KATEGORIE" 
+   (	"ID_KATEGORII" NUMBER(10,0), 
+	"NAZWA_KATEGORII" VARCHAR2(255 CHAR)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  KLIENCI
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."KLIENCI" 
+   (	"ID_KLIENTA" NUMBER(10,0), 
+	"IMIE" VARCHAR2(255 CHAR), 
+	"NAZWISKO" VARCHAR2(255 CHAR), 
+	"ADRES" VARCHAR2(255 CHAR), 
+	"KOD_POCZTOWY" VARCHAR2(255 CHAR), 
+	"MIASTO" VARCHAR2(255 CHAR), 
+	"WOJEWODZTWO" VARCHAR2(255 CHAR), 
+	"HASLO" VARCHAR2(255 CHAR), 
+	"LOGIN" VARCHAR2(255 BYTE), 
+	"EMAIL" VARCHAR2(255 BYTE)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  KOMPUTERY
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."KOMPUTERY" 
+   (	"ID_KOMPUTERA" NUMBER(10,0), 
+	"PRODUCENT" VARCHAR2(255 CHAR), 
+	"ROK_PRODUKCJI" NUMBER(10,0), 
+	"NR_SERYJNY" VARCHAR2(30 BYTE)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  MAGAZYN
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."MAGAZYN" 
+   (	"ID_CZESCI" NUMBER(10,0), 
+	"LICZBA_SZTUK" NUMBER(10,0)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  PLATNOSCI
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."PLATNOSCI" 
+   (	"ID_FAKTURY" NUMBER(10,0), 
+	"ID_NAPRAWY" NUMBER(10,0), 
+	"DO_ZAPLATY" FLOAT(126), 
+	"ZAPLACONO" FLOAT(126)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  PRACE_NAPRAWCZE
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" 
+   (	"ID_PRACY" NUMBER(10,0), 
+	"ID_USLUGI" NUMBER(10,0), 
+	"ID_NAPRAWY" NUMBER(10,0), 
+	"ID_PRACOWNIKA" NUMBER(10,0)
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  PRACOWNICY
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."PRACOWNICY" 
+   (	"ID_PRACOWNIKA" NUMBER(10,0), 
+	"IMIE" VARCHAR2(255 CHAR), 
+	"NAZWISKO" VARCHAR2(255 CHAR), 
+	"ADRES" VARCHAR2(255 CHAR), 
+	"KOD_POCZTOWY" VARCHAR2(255 CHAR), 
+	"MIASTO" VARCHAR2(255 CHAR), 
+	"WOJEWODZTWO" VARCHAR2(255 CHAR), 
+	"NR_TEL" NUMBER(10,0), 
+	"NR_UMOWY" NUMBER(10,0), 
+	"HASLO_LOGOWANIA" VARCHAR2(255 CHAR), 
+	"UPRAWNIENIA_ADMIN" NUMBER(3,0)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  PRODUCENCI
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."PRODUCENCI" 
+   (	"ID_PRODUCENTA" NUMBER(10,0), 
+	"NAZWA_PRODUCENTA" VARCHAR2(255 CHAR)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  UMOWY
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."UMOWY" 
+   (	"NR_UMOWY" NUMBER(10,0), 
+	"DATA_ROZPOCZECIA" DATE, 
+	"DATA_ZAKONCZENIA" DATE, 
+	"WYPLATA" FLOAT(126), 
+	"ID_PRACOWNIKA" NUMBER(10,0)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  ZAMOWIENIE_NAPRAWY
+--------------------------------------------------------
+
+  CREATE TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" 
+   (	"ID_NAPRAWY" NUMBER(10,0), 
+	"ID_KLIENTA" NUMBER(10,0), 
+	"ID_KOMPUTERA" NUMBER(10,0), 
+	"OPIS_USTERKI" VARCHAR2(4000 CHAR), 
+	"STATUS" VARCHAR2(255 CHAR), 
+	"DATA_ROZPOCZECIA" DATE, 
+	"DATA_ZAKONCZENIA" DATE
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  KLIENCI_ID_KLIENTA_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "SERWIS_KOMP"."KLIENCI_ID_KLIENTA_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 21 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence KOMPUTERY_ID_KOMPUTERA_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "SERWIS_KOMP"."KOMPUTERY_ID_KOMPUTERA_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PLATNOSCI_ID_FAKTURY_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "SERWIS_KOMP"."PLATNOSCI_ID_FAKTURY_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PRACE_NAPRAWCZE_ID_PRACY_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "SERWIS_KOMP"."PRACE_NAPRAWCZE_ID_PRACY_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 21 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PRACOWNICY_ID_PRACOWNIKA_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "SERWIS_KOMP"."PRACOWNICY_ID_PRACOWNIKA_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence ZAMOWIENIE_NAPRAWY_ID_NAPRAWY_
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY_ID_NAPRAWY_"  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1 START WITH 21 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+REM INSERTING into SERWIS_KOMP.CENNIK
+SET DEFINE OFF;
+Insert into SERWIS_KOMP.CENNIK (ID_USLUGI,NAZWA_USLUGI,CENA) values ('11','Czyszczenie komputera','15');
+Insert into SERWIS_KOMP.CENNIK (ID_USLUGI,NAZWA_USLUGI,CENA) values ('12','Wlacz/ Wyl¹cz komputer','5');
+Insert into SERWIS_KOMP.CENNIK (ID_USLUGI,NAZWA_USLUGI,CENA) values ('1','HARD RESET DYSKU','600');
+REM INSERTING into SERWIS_KOMP.CZESCI_ZAMIENNE
+SET DEFINE OFF;
+REM INSERTING into SERWIS_KOMP.KATEGORIE
+SET DEFINE OFF;
+REM INSERTING into SERWIS_KOMP.KLIENCI
+SET DEFINE OFF;
+Insert into SERWIS_KOMP.KLIENCI (ID_KLIENTA,IMIE,NAZWISKO,ADRES,KOD_POCZTOWY,MIASTO,WOJEWODZTWO,HASLO,LOGIN,EMAIL) values ('4','Pawel','W??dolny','?????????? 445','????????????????','szcz','dddddfsfs','$2y$10$GiCeEhCcZiKAHXyv1f45BOwkVZ1nfv6I4snoSRjS9.8io/thhQ7xi','kloss','mmm@gmail.com');
+Insert into SERWIS_KOMP.KLIENCI (ID_KLIENTA,IMIE,NAZWISKO,ADRES,KOD_POCZTOWY,MIASTO,WOJEWODZTWO,HASLO,LOGIN,EMAIL) values ('3','klos','lans','asdres 23','34-100','malopolsk','Malopolskie','$2y$10$tBOp/FP27rSs2h3e2veeDurvXuEOTzIiLa6h90Ag5m7En5j3uQTv2','login2','email2@email.com');
+REM INSERTING into SERWIS_KOMP.KOMPUTERY
+SET DEFINE OFF;
+Insert into SERWIS_KOMP.KOMPUTERY (ID_KOMPUTERA,PRODUCENT,ROK_PRODUKCJI,NR_SERYJNY) values ('15','Dell','2015',null);
+REM INSERTING into SERWIS_KOMP.MAGAZYN
+SET DEFINE OFF;
+REM INSERTING into SERWIS_KOMP.PLATNOSCI
+SET DEFINE OFF;
+Insert into SERWIS_KOMP.PLATNOSCI (ID_FAKTURY,ID_NAPRAWY,DO_ZAPLATY,ZAPLACONO) values ('458','11',null,null);
+REM INSERTING into SERWIS_KOMP.PRACE_NAPRAWCZE
+SET DEFINE OFF;
+Insert into SERWIS_KOMP.PRACE_NAPRAWCZE (ID_PRACY,ID_USLUGI,ID_NAPRAWY,ID_PRACOWNIKA) values ('1','11','11',null);
+Insert into SERWIS_KOMP.PRACE_NAPRAWCZE (ID_PRACY,ID_USLUGI,ID_NAPRAWY,ID_PRACOWNIKA) values ('3','12','11',null);
+REM INSERTING into SERWIS_KOMP.PRACOWNICY
+SET DEFINE OFF;
+REM INSERTING into SERWIS_KOMP.PRODUCENCI
+SET DEFINE OFF;
+REM INSERTING into SERWIS_KOMP.UMOWY
+SET DEFINE OFF;
+REM INSERTING into SERWIS_KOMP.ZAMOWIENIE_NAPRAWY
+SET DEFINE OFF;
+Insert into SERWIS_KOMP.ZAMOWIENIE_NAPRAWY (ID_NAPRAWY,ID_KLIENTA,ID_KOMPUTERA,OPIS_USTERKI,STATUS,DATA_ROZPOCZECIA,DATA_ZAKONCZENIA) values ('11','3','15','Zepsól siê','nowy',to_date('18/01/04','RR/MM/DD'),null);
+Insert into SERWIS_KOMP.ZAMOWIENIE_NAPRAWY (ID_NAPRAWY,ID_KLIENTA,ID_KOMPUTERA,OPIS_USTERKI,STATUS,DATA_ROZPOCZECIA,DATA_ZAKONCZENIA) values ('1','3','15','Znowu siê zepsól','nowy',to_date('18/01/01','RR/MM/DD'),null);
+--------------------------------------------------------
+--  DDL for Index ID_KATEGORII
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_KATEGORII" ON "SERWIS_KOMP"."CZESCI_ZAMIENNE" ("ID_KATEGORII") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_KLIENTA
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_KLIENTA" ON "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ("ID_KLIENTA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_KOMPUTERA
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_KOMPUTERA" ON "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ("ID_KOMPUTERA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_NAPRAWY
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_NAPRAWY" ON "SERWIS_KOMP"."PRACE_NAPRAWCZE" ("ID_NAPRAWY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_NAPRAWY_2
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."ID_NAPRAWY_2" ON "SERWIS_KOMP"."PLATNOSCI" ("ID_NAPRAWY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_PRACOWNIKA
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_PRACOWNIKA" ON "SERWIS_KOMP"."UMOWY" ("ID_PRACOWNIKA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_PRACOWNIKA_1
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_PRACOWNIKA_1" ON "SERWIS_KOMP"."PRACE_NAPRAWCZE" ("ID_PRACOWNIKA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_PRODUCENTA
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_PRODUCENTA" ON "SERWIS_KOMP"."CZESCI_ZAMIENNE" ("ID_PRODUCENTA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index ID_USLUGI
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."ID_USLUGI" ON "SERWIS_KOMP"."PRACE_NAPRAWCZE" ("ID_USLUGI") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index NR_UMOWY_2_1
+--------------------------------------------------------
+
+  CREATE INDEX "SERWIS_KOMP"."NR_UMOWY_2_1" ON "SERWIS_KOMP"."PRACOWNICY" ("NR_UMOWY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY" ON "SERWIS_KOMP"."CENNIK" ("ID_USLUGI") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_1
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_1" ON "SERWIS_KOMP"."UMOWY" ("NR_UMOWY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_10
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_10" ON "SERWIS_KOMP"."KOMPUTERY" ("ID_KOMPUTERA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_11
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_11" ON "SERWIS_KOMP"."PLATNOSCI" ("ID_FAKTURY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_2
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_2" ON "SERWIS_KOMP"."PRACE_NAPRAWCZE" ("ID_PRACY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_3
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_3" ON "SERWIS_KOMP"."PRODUCENCI" ("ID_PRODUCENTA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_4
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_4" ON "SERWIS_KOMP"."MAGAZYN" ("ID_CZESCI") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_5
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_5" ON "SERWIS_KOMP"."PRACOWNICY" ("ID_PRACOWNIKA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_6
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_6" ON "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ("ID_NAPRAWY") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_7
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_7" ON "SERWIS_KOMP"."CZESCI_ZAMIENNE" ("ID_CZESCI") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_8
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_8" ON "SERWIS_KOMP"."KATEGORIE" ("ID_KATEGORII") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Index PRIMARY_9
+--------------------------------------------------------
+
+  CREATE UNIQUE INDEX "SERWIS_KOMP"."PRIMARY_9" ON "SERWIS_KOMP"."KLIENCI" ("ID_KLIENTA") 
+  PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Trigger KLIENCI_ID_KLIENTA_TRG
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "SERWIS_KOMP"."KLIENCI_ID_KLIENTA_TRG" BEFORE INSERT ON klienci
+FOR EACH ROW
+DECLARE 
+v_newVal NUMBER(12) := 0;
+v_incval NUMBER(12) := 0;
+BEGIN
+  IF INSERTING AND :new.id_klienta IS NULL THEN
+    SELECT  klienci_id_klienta_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+    -- If this is the first time this table have been inserted into (sequence == 1)
+    IF v_newVal = 1 THEN 
+      --get the max indentity value from the table
+      SELECT NVL(max(id_klienta),0) INTO v_newVal FROM klienci;
+      v_newVal := v_newVal + 1;
+      --set the sequence to that value
+      LOOP
+           EXIT WHEN v_incval>=v_newVal;
+           SELECT klienci_id_klienta_SEQ.nextval INTO v_incval FROM dual;
+      END LOOP;
+    END IF;
+    --used to emulate LAST_INSERT_ID()
+    --mysql_utilities.identity := v_newVal; 
+   -- assign the value from the sequence to emulate the identity column
+   :new.id_klienta := v_newVal;
+  END IF;
+END;
+/
+ALTER TRIGGER "SERWIS_KOMP"."KLIENCI_ID_KLIENTA_TRG" ENABLE;
+--------------------------------------------------------
+--  DDL for Trigger KOMPUTERY_ID_KOMPUTERA_TRG
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "SERWIS_KOMP"."KOMPUTERY_ID_KOMPUTERA_TRG" BEFORE INSERT ON komputery
+FOR EACH ROW
+DECLARE 
+v_newVal NUMBER(12) := 0;
+v_incval NUMBER(12) := 0;
+BEGIN
+  IF INSERTING AND :new.id_komputera IS NULL THEN
+    SELECT  komputery_id_komputera_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+    -- If this is the first time this table have been inserted into (sequence == 1)
+    IF v_newVal = 1 THEN 
+      --get the max indentity value from the table
+      SELECT NVL(max(id_komputera),0) INTO v_newVal FROM komputery;
+      v_newVal := v_newVal + 1;
+      --set the sequence to that value
+      LOOP
+           EXIT WHEN v_incval>=v_newVal;
+           SELECT komputery_id_komputera_SEQ.nextval INTO v_incval FROM dual;
+      END LOOP;
+    END IF;
+    --used to emulate LAST_INSERT_ID()
+    --mysql_utilities.identity := v_newVal; 
+   -- assign the value from the sequence to emulate the identity column
+   :new.id_komputera := v_newVal;
+  END IF;
+END;
+/
+ALTER TRIGGER "SERWIS_KOMP"."KOMPUTERY_ID_KOMPUTERA_TRG" ENABLE;
+--------------------------------------------------------
+--  DDL for Trigger PLATNOSCI_ID_FAKTURY_TRG
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "SERWIS_KOMP"."PLATNOSCI_ID_FAKTURY_TRG" BEFORE INSERT ON platnosci
+FOR EACH ROW
+DECLARE 
+v_newVal NUMBER(12) := 0;
+v_incval NUMBER(12) := 0;
+BEGIN
+  IF INSERTING AND :new.id_faktury IS NULL THEN
+    SELECT  platnosci_id_faktury_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+    -- If this is the first time this table have been inserted into (sequence == 1)
+    IF v_newVal = 1 THEN 
+      --get the max indentity value from the table
+      SELECT NVL(max(id_faktury),0) INTO v_newVal FROM platnosci;
+      v_newVal := v_newVal + 1;
+      --set the sequence to that value
+      LOOP
+           EXIT WHEN v_incval>=v_newVal;
+           SELECT platnosci_id_faktury_SEQ.nextval INTO v_incval FROM dual;
+      END LOOP;
+    END IF;
+    --used to emulate LAST_INSERT_ID()
+    --mysql_utilities.identity := v_newVal; 
+   -- assign the value from the sequence to emulate the identity column
+   :new.id_faktury := v_newVal;
+  END IF;
+END;
+/
+ALTER TRIGGER "SERWIS_KOMP"."PLATNOSCI_ID_FAKTURY_TRG" ENABLE;
+--------------------------------------------------------
+--  DDL for Trigger PRACE_NAPRAWCZE_ID_PRACY_TRG
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "SERWIS_KOMP"."PRACE_NAPRAWCZE_ID_PRACY_TRG" BEFORE INSERT ON prace_naprawcze
+FOR EACH ROW
+DECLARE 
+v_newVal NUMBER(12) := 0;
+v_incval NUMBER(12) := 0;
+BEGIN
+  IF INSERTING AND :new.id_pracy IS NULL THEN
+    SELECT  prace_naprawcze_id_pracy_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+    -- If this is the first time this table have been inserted into (sequence == 1)
+    IF v_newVal = 1 THEN 
+      --get the max indentity value from the table
+      SELECT NVL(max(id_pracy),0) INTO v_newVal FROM prace_naprawcze;
+      v_newVal := v_newVal + 1;
+      --set the sequence to that value
+      LOOP
+           EXIT WHEN v_incval>=v_newVal;
+           SELECT prace_naprawcze_id_pracy_SEQ.nextval INTO v_incval FROM dual;
+      END LOOP;
+    END IF;
+    --used to emulate LAST_INSERT_ID()
+    --mysql_utilities.identity := v_newVal; 
+   -- assign the value from the sequence to emulate the identity column
+   :new.id_pracy := v_newVal;
+  END IF;
+END;
+/
+ALTER TRIGGER "SERWIS_KOMP"."PRACE_NAPRAWCZE_ID_PRACY_TRG" ENABLE;
+--------------------------------------------------------
+--  DDL for Trigger PRACOWNICY_ID_PRACOWNIKA_TRG
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "SERWIS_KOMP"."PRACOWNICY_ID_PRACOWNIKA_TRG" BEFORE INSERT ON pracownicy
+FOR EACH ROW
+DECLARE 
+v_newVal NUMBER(12) := 0;
+v_incval NUMBER(12) := 0;
+BEGIN
+  IF INSERTING AND :new.id_pracownika IS NULL THEN
+    SELECT  pracownicy_id_pracownika_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+    -- If this is the first time this table have been inserted into (sequence == 1)
+    IF v_newVal = 1 THEN 
+      --get the max indentity value from the table
+      SELECT NVL(max(id_pracownika),0) INTO v_newVal FROM pracownicy;
+      v_newVal := v_newVal + 1;
+      --set the sequence to that value
+      LOOP
+           EXIT WHEN v_incval>=v_newVal;
+           SELECT pracownicy_id_pracownika_SEQ.nextval INTO v_incval FROM dual;
+      END LOOP;
+    END IF;
+    --used to emulate LAST_INSERT_ID()
+    --mysql_utilities.identity := v_newVal; 
+   -- assign the value from the sequence to emulate the identity column
+   :new.id_pracownika := v_newVal;
+  END IF;
+END;
+/
+ALTER TRIGGER "SERWIS_KOMP"."PRACOWNICY_ID_PRACOWNIKA_TRG" ENABLE;
+--------------------------------------------------------
+--  DDL for Trigger ZAMOWIENIE_NAPRAWY_ID_NAPRAW_1
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY_ID_NAPRAW_1" BEFORE INSERT ON zamowienie_naprawy
+FOR EACH ROW
+DECLARE 
+v_newVal NUMBER(12) := 0;
+v_incval NUMBER(12) := 0;
+BEGIN
+  IF INSERTING AND :new.id_naprawy IS NULL THEN
+    SELECT  zamowienie_naprawy_id_naprawy_.NEXTVAL INTO v_newVal FROM DUAL;
+    -- If this is the first time this table have been inserted into (sequence == 1)
+    IF v_newVal = 1 THEN 
+      --get the max indentity value from the table
+      SELECT NVL(max(id_naprawy),0) INTO v_newVal FROM zamowienie_naprawy;
+      v_newVal := v_newVal + 1;
+      --set the sequence to that value
+      LOOP
+           EXIT WHEN v_incval>=v_newVal;
+           SELECT zamowienie_naprawy_id_naprawy_.nextval INTO v_incval FROM dual;
+      END LOOP;
+    END IF;
+    --used to emulate LAST_INSERT_ID()
+    --mysql_utilities.identity := v_newVal; 
+   -- assign the value from the sequence to emulate the identity column
+   :new.id_naprawy := v_newVal;
+  END IF;
+END;
+/
+ALTER TRIGGER "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY_ID_NAPRAW_1" ENABLE;
+--------------------------------------------------------
+--  DDL for Trigger ZAMOWIENIE_NAPRAWY_STATUS_ETRG
+--------------------------------------------------------
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY_STATUS_ETRG" 
+BEFORE INSERT OR UPDATE ON zamowienie_naprawy
+FOR EACH ROW
+DECLARE
+  v_val zamowienie_naprawy.status%TYPE;
+  v_test zamowienie_naprawy.status%TYPE;
+BEGIN
+  v_val := 'nowy';
+  v_test := TRIM(:new.status);
+  if v_test = '1' OR v_test = 'nowy' THEN 
+  v_val := 'nowy';
+  elsif v_test = '2' OR v_test = 'przyjeto' THEN 
+  v_val := 'przyjeto';
+  elsif v_test = '3' OR v_test = 'w naprawie' THEN 
+  v_val := 'w naprawie';
+  elsif v_test = '4' OR v_test = 'naprawiony' THEN 
+  v_val := 'naprawiony';
+  end if;  :new.status := v_val;
+END;
+/
+ALTER TRIGGER "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY_STATUS_ETRG" ENABLE;
+--------------------------------------------------------
+--  DDL for Synonymn DUAL
+--------------------------------------------------------
+
+  CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "DUAL" FOR "SYS"."DUAL";
+--------------------------------------------------------
+--  Constraints for Table CENNIK
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."CENNIK" MODIFY ("ID_USLUGI" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CENNIK" MODIFY ("NAZWA_USLUGI" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CENNIK" MODIFY ("CENA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CENNIK" ADD CONSTRAINT "PRIMARY" PRIMARY KEY ("ID_USLUGI")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table CZESCI_ZAMIENNE
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" MODIFY ("ID_CZESCI" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" MODIFY ("ID_KATEGORII" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" MODIFY ("ID_PRODUCENTA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" MODIFY ("MODEL" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" MODIFY ("CENA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" ADD CONSTRAINT "PRIMARY_7" PRIMARY KEY ("ID_CZESCI")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table KATEGORIE
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."KATEGORIE" MODIFY ("ID_KATEGORII" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KATEGORIE" MODIFY ("NAZWA_KATEGORII" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KATEGORIE" ADD CONSTRAINT "PRIMARY_8" PRIMARY KEY ("ID_KATEGORII")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table KLIENCI
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("ID_KLIENTA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("IMIE" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("NAZWISKO" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("ADRES" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("KOD_POCZTOWY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("MIASTO" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("WOJEWODZTWO" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("HASLO" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" ADD CONSTRAINT "PRIMARY_9" PRIMARY KEY ("ID_KLIENTA")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("LOGIN" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KLIENCI" MODIFY ("EMAIL" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Constraints for Table KOMPUTERY
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."KOMPUTERY" MODIFY ("ID_KOMPUTERA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."KOMPUTERY" ADD CONSTRAINT "PRIMARY_10" PRIMARY KEY ("ID_KOMPUTERA")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table MAGAZYN
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."MAGAZYN" MODIFY ("ID_CZESCI" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."MAGAZYN" MODIFY ("LICZBA_SZTUK" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."MAGAZYN" ADD CONSTRAINT "PRIMARY_4" PRIMARY KEY ("ID_CZESCI")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table PLATNOSCI
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."PLATNOSCI" MODIFY ("ID_FAKTURY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PLATNOSCI" MODIFY ("ID_NAPRAWY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PLATNOSCI" ADD CONSTRAINT "PRIMARY_11" PRIMARY KEY ("ID_FAKTURY")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+  ALTER TABLE "SERWIS_KOMP"."PLATNOSCI" ADD CONSTRAINT "ID_NAPRAWY_2" UNIQUE ("ID_NAPRAWY")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table PRACE_NAPRAWCZE
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" MODIFY ("ID_PRACY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" MODIFY ("ID_USLUGI" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" MODIFY ("ID_NAPRAWY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" ADD CONSTRAINT "PRIMARY_2" PRIMARY KEY ("ID_PRACY")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table PRACOWNICY
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("ID_PRACOWNIKA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("IMIE" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("NAZWISKO" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("ADRES" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("KOD_POCZTOWY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("MIASTO" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("WOJEWODZTWO" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("NR_TEL" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("NR_UMOWY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("HASLO_LOGOWANIA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" MODIFY ("UPRAWNIENIA_ADMIN" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" ADD CONSTRAINT "PRIMARY_5" PRIMARY KEY ("ID_PRACOWNIKA")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table PRODUCENCI
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."PRODUCENCI" MODIFY ("ID_PRODUCENTA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRODUCENCI" MODIFY ("NAZWA_PRODUCENTA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."PRODUCENCI" ADD CONSTRAINT "PRIMARY_3" PRIMARY KEY ("ID_PRODUCENTA")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table UMOWY
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."UMOWY" MODIFY ("NR_UMOWY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."UMOWY" MODIFY ("DATA_ROZPOCZECIA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."UMOWY" MODIFY ("DATA_ZAKONCZENIA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."UMOWY" MODIFY ("WYPLATA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."UMOWY" MODIFY ("ID_PRACOWNIKA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."UMOWY" ADD CONSTRAINT "PRIMARY_1" PRIMARY KEY ("NR_UMOWY")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table ZAMOWIENIE_NAPRAWY
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" MODIFY ("ID_NAPRAWY" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" MODIFY ("ID_KLIENTA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" MODIFY ("ID_KOMPUTERA" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" MODIFY ("OPIS_USTERKI" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" MODIFY ("STATUS" NOT NULL ENABLE);
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ADD CONSTRAINT "PRIMARY_6" PRIMARY KEY ("ID_NAPRAWY")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE "USERS"  ENABLE;
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" MODIFY ("DATA_ROZPOCZECIA" NOT NULL ENABLE);
+--------------------------------------------------------
+--  Ref Constraints for Table CZESCI_ZAMIENNE
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" ADD CONSTRAINT "CZESCI_ZAMIENNE_IBFK_1" FOREIGN KEY ("ID_KATEGORII")
+	  REFERENCES "SERWIS_KOMP"."KATEGORIE" ("ID_KATEGORII") ENABLE;
+  ALTER TABLE "SERWIS_KOMP"."CZESCI_ZAMIENNE" ADD CONSTRAINT "CZESCI_ZAMIENNE_IBFK_2" FOREIGN KEY ("ID_PRODUCENTA")
+	  REFERENCES "SERWIS_KOMP"."PRODUCENCI" ("ID_PRODUCENTA") ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table MAGAZYN
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."MAGAZYN" ADD CONSTRAINT "MAGAZYN_IBFK_1" FOREIGN KEY ("ID_CZESCI")
+	  REFERENCES "SERWIS_KOMP"."CZESCI_ZAMIENNE" ("ID_CZESCI") ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table PLATNOSCI
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."PLATNOSCI" ADD CONSTRAINT "PLATNOSCI_IBFK_1" FOREIGN KEY ("ID_NAPRAWY")
+	  REFERENCES "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ("ID_NAPRAWY") ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table PRACE_NAPRAWCZE
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" ADD CONSTRAINT "PRACE_NAPRAWCZE_IBFK_1" FOREIGN KEY ("ID_PRACOWNIKA")
+	  REFERENCES "SERWIS_KOMP"."PRACOWNICY" ("ID_PRACOWNIKA") ENABLE;
+  ALTER TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" ADD CONSTRAINT "PRACE_NAPRAWCZE_IBFK_2" FOREIGN KEY ("ID_USLUGI")
+	  REFERENCES "SERWIS_KOMP"."CENNIK" ("ID_USLUGI") ENABLE;
+  ALTER TABLE "SERWIS_KOMP"."PRACE_NAPRAWCZE" ADD CONSTRAINT "PRACE_NAPRAWCZE_IBFK_3" FOREIGN KEY ("ID_NAPRAWY")
+	  REFERENCES "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ("ID_NAPRAWY") ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table PRACOWNICY
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."PRACOWNICY" ADD CONSTRAINT "PRACOWNICY_IBFK_1" FOREIGN KEY ("NR_UMOWY")
+	  REFERENCES "SERWIS_KOMP"."UMOWY" ("NR_UMOWY") ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table ZAMOWIENIE_NAPRAWY
+--------------------------------------------------------
+
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ADD CONSTRAINT "ZAMOWIENIE_NAPRAWY_IBFK_1" FOREIGN KEY ("ID_KLIENTA")
+	  REFERENCES "SERWIS_KOMP"."KLIENCI" ("ID_KLIENTA") ENABLE;
+  ALTER TABLE "SERWIS_KOMP"."ZAMOWIENIE_NAPRAWY" ADD CONSTRAINT "ZAMOWIENIE_NAPRAWY_IBFK_2" FOREIGN KEY ("ID_KOMPUTERA")
+	  REFERENCES "SERWIS_KOMP"."KOMPUTERY" ("ID_KOMPUTERA") ENABLE;

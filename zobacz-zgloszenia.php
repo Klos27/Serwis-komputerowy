@@ -16,7 +16,7 @@
 	<a href="index.php"><img src="img/Logo.png" alt="Strona Główna"/></a><br />
 	Twoje aktualne zgłoszenia:
 	
-	<table width="1000" align="center" border="1" bordercolor="#d5d5d5"  cellpadding="0" cellspacing="0">
+	<table width="1000" border="1" bordercolor="#d5d5d5"  cellpadding="0" cellspacing="0">
         <tr>
         <?php
 		

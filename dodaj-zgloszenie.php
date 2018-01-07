@@ -71,7 +71,8 @@
 		
 		if((strlen($komp_opis)<10) || (strlen($komp_opis)>4000)){
 			$wszystko_OK = false;
-			$_SESSION['e_komp_opis']="Opis usterki musi posiadać od 10 do 4000 znaków!";
+			$dlugosc = strlen($komp_opis);
+			$_SESSION['e_komp_opis']="Opis usterki musi posiadać od 10 do 4000 znaków! Aktualna ilość = $dlugosc";
 		}
 	
 		// Bot or not?
@@ -150,7 +151,7 @@
 					
 					// Dodaj zgłoszenie do bazy
 					$user = $_SESSION['id'];
-					$stid = oci_parse($polaczenie, "INSERT INTO ZAMOWIENIE_NAPRAWY VALUES (NULL, '$user', (SELECT ID_KOMPUTERA from KOMPUTERY where NR_SERYJNY like '$komp_numer') , '$komp_opis', 'NOWY', SYSDATE, NULL)");
+					$stid = oci_parse($polaczenie, "INSERT INTO ZAMOWIENIE_NAPRAWY VALUES (NULL, '$user', (SELECT ID_KOMPUTERA from KOMPUTERY where NR_SERYJNY like '$komp_numer') , '$komp_opis', sysdate , NULL , 'NOWY')");
 
 					$r = oci_execute($stid);
 				

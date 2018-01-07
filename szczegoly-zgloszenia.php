@@ -101,6 +101,7 @@ END;
 	echo 'SBD - Serwis Komputerowy<br />';
 	echo 'ul. Warszawska 24<br />';
 	echo '31-155 Kraków<br />';
+	echo 'Nr. rachunku ING 17 1111 1111 2222 2222 2222 2222';
 
 
 						}
@@ -152,7 +153,7 @@ echo '</tr></table>';
 					$r = oci_execute($stid);
 					
 					if ($r){
-						$suma = 0;
+						$a_suma = 0;
 						
 						echo "Szczegóły wykonanych prac dla komputera ".$a_komputer." :<br />";
 echo '<table width="1000" border="1" bordercolor="#d5d5d5"  cellpadding="0" cellspacing="0">
@@ -168,7 +169,7 @@ END;
 		$a_iduslugi = $wiersz['ID_USLUGI'];
 		$a_idpracownika = $wiersz['ID_PRACOWNIKA'];
 		$a_nazwa_uslugi = $wiersz['NAZWA_USLUGI'];
-		$a_cena = $wiersz['CENA'];
+		$a_cena = $wiersz['CENA_PRACY'];
 		$a_suma = $a_suma + $a_cena;
 		
 echo<<<END
@@ -196,6 +197,61 @@ echo '</tr></table><br />';
 						echo '<br />spróbuj ponownie później';
 					}
 					oci_free_statement($stid);
+					
+				// szczegoly zakupionych części					
+					$stid = oci_parse($polaczenie, "SELECT * FROM PRACE_NAPRAWCZE p LEFT JOIN PRACE_NAPRAWCZE_CZESCI pc ON p.ID_PRACY = pc.ID_PRACY LEFT JOIN CZESCI_ZAMIENNE c ON pc.ID_CZESCI = c. ID_CZESCI LEFT JOIN PRODUCENCI pr ON c.ID_PRODUCENTA = pr.ID_PRODUCENTA LEFT JOIN KATEGORIE k ON c.ID_KATEGORII = k.ID_KATEGORII WHERE p.ID_NAPRAWY = '$a_naprawa'");
+					$r = oci_execute($stid);
+					
+					if ($r){
+						$a_suma_zakupu = 0;
+						
+						echo "Szczegóły wymienionych części w komputerze nr ".$a_komputer." :<br />";
+echo '<table width="1000" border="1" bordercolor="#d5d5d5"  cellpadding="0" cellspacing="0">
+        <tr>';							
+echo<<<END
+<td width="100" align="center" bgcolor="e5e5e5">Numer Części</td>
+<td width="100" align="center" bgcolor="e5e5e5">Nazwa modelu części</td>
+<td width="100" align="center" bgcolor="e5e5e5">Nazwa kategorii</td>
+<td width="100" align="center" bgcolor="e5e5e5">Nazwa producenta</td>
+<td width="100" align="center" bgcolor="e5e5e5">Cena zakupu</td>
+</tr><tr>
+END;
+		while($wiersz = oci_fetch_array($stid, OCI_RETURN_NULLS+OCI_ASSOC)){
+		$a_idczesci = $wiersz['ID_CZESCI'];
+		$a_nazwa_modelu = $wiersz['MODEL'];
+		$a_nazwa_kategorii = $wiersz['NAZWA_KATEGORII'];
+		$a_nazwa_producenta = $wiersz['NAZWA_PRODUCENTA'];
+		$a_cena_zakupu = $wiersz['CENA_ZAKUPU'];
+		$a_suma_zakupu = $a_suma_zakupu + $a_cena_zakupu;
+		
+echo<<<END
+<td width="100" align="center">$a_idczesci</td>
+<td width="100" align="center">$a_nazwa_modelu</td>
+<td width="100" align="center">$a_nazwa_kategorii</td>
+<td width="100" align="center">$a_nazwa_producenta</td>
+<td width="100" align="center">$a_cena_zakupu</td>
+</tr><tr>
+END;
+		}
+echo<<<END
+<td width="100" align="center">SUMA</td>
+<td width="100" align="center">-</td>
+<td width="100" align="center">-</td>
+<td width="100" align="center">-</td>
+<td width="100" align="center">$a_suma_zakupu</td>
+</tr><tr>
+END;
+echo '</tr></table><br />';
+
+						
+					}
+					else{
+						echo 'Przepraszamy wystąpił błąd serwera';
+						echo '<br />Nie można pobrać informacji o wymienionych częściach';
+						echo '<br />spróbuj ponownie później';
+					}
+					oci_free_statement($stid);				
+									
 // szczegoly platnosci ile do zaplaty, ile zaplacono, dane do przelewu					
 					echo "<br /><br />";
 					$stid = oci_parse($polaczenie, "SELECT * FROM PLATNOSCI WHERE ID_NAPRAWY = '$a_naprawa'");
