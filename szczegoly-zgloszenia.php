@@ -91,8 +91,7 @@ echo '</tr></table>';
 echo<<<END
 <br />Opis statusów:<br />
 nowy - Zgłoszenie utworzone przez użytkownika, oczekiwanie na dostawę urządzenia<br />
-przyjęty - Sprzęt został dostarczony, wkrótce rozpocznie się analiza uszkodzeń<br />
-zdiagnozowany - Sprzęt został zdiagnozowany i rozpoczeła się jego naprawa, postepy możesz śledzić w szczegółach<br />
+w naprawie - Sprzęt został zdiagnozowany i rozpoczeła się jego naprawa, postepy możesz śledzić w szczegółach<br />
 naprawiony - Sprzęt został naprawiony, oczekujemy na wpłatę kwoty podanej w szczegółach<br />
 zakończony - Otrzymalismy Twoją wpłatę, komputer został wysłany lub oczekuje na odbiór, jeżeli dostarczyłeś go osobiście<br />					
 END;
