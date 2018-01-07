@@ -251,7 +251,8 @@ echo '</tr></table><br />';
 						echo '<br />spróbuj ponownie później';
 					}
 					oci_free_statement($stid);				
-									
+
+					$a_update_faktura = false;			
 // szczegoly platnosci ile do zaplaty, ile zaplacono, dane do przelewu					
 					echo "<br /><br />";
 					$stid = oci_parse($polaczenie, "SELECT * FROM PLATNOSCI WHERE ID_NAPRAWY = '$a_naprawa'");
@@ -272,15 +273,24 @@ END;
 		$a_faktura = $wiersz['ID_FAKTURY'];
 		$a_do_zaplaty = $wiersz['DO_ZAPLATY'];
 		$a_zaplacono = $wiersz['ZAPLACONO'];
-		
+		$a_do_zaplaty_suma = $a_suma + $a_suma_zakupu;
+		if(($a_faktura != 0) && ($a_do_zaplaty != $a_do_zaplaty_suma))	// jeżeli faktura istnieje
+			$a_update_faktura = true;	// jeżeli suma w fakturze jest inna od aktualnej to zaktualizuj fakture
+		else
+			$a_update_faktura = false;
 echo<<<END
 <td width="100" align="center">$a_faktura</td>
-<td width="100" align="center">$a_do_zaplaty</td>
+<td width="100" align="center">$a_do_zaplaty_suma</td>
 <td width="100" align="center">$a_zaplacono</td>
 </tr><tr>
 END;
 		}
 echo '</tr></table>';
+	echo '<span style="color:red"><b><br />Jeżeli twój komputer posiada status naprawiony, oczekujemy na Twoją wpłatę na nasze konto:</b></span><br /><br />';
+	echo 'SBD - Serwis Komputerowy<br />';
+	echo 'ul. Warszawska 24<br />';
+	echo '31-155 Kraków<br />';
+	echo 'Nr. rachunku ING 17 1111 1111 2222 2222 2222 2222';	
 						
 					}
 					else{
@@ -289,16 +299,26 @@ echo '</tr></table>';
 						echo '<br />spróbuj ponownie później';
 					}
 					oci_free_statement($stid);					
-					
-					
 
+					// zaktualizuj fakture
+					if($a_update_faktura == true){
+						$stid = oci_parse($polaczenie, "UPDATE PLATNOSCI SET DO_ZAPLATY = '$a_do_zaplaty_suma' WHERE ID_FAKTURY = '$a_faktura'");
+						$r = oci_execute($stid);
+						
+						if ($r)
+							echo "<br /><br /> Dane faktury zostały zaktualizowane<br />";
+						else
+							echo '<span style="color:red"><b><br /><br />Nie udało zaktualizować się danych faktury</b></span><br /><br />';
+						oci_free_statement($stid);
+					}
+					
 					oci_close($polaczenie);
 				}
 			}
 			catch( Exception $e){
 				echo $e['message'];
 			}
-						
+	
 			
 		?>
 <br /><br /><br /><br /><br /><br />
