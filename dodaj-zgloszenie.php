@@ -151,7 +151,7 @@
 					
 					// Dodaj zgłoszenie do bazy
 					$user = $_SESSION['id'];
-					$stid = oci_parse($polaczenie, "INSERT INTO ZAMOWIENIE_NAPRAWY VALUES (NULL, '$user', (SELECT ID_KOMPUTERA from KOMPUTERY where NR_SERYJNY like '$komp_numer') , '$komp_opis', sysdate , NULL , 'NOWY')");
+					$stid = oci_parse($polaczenie, "INSERT INTO ZAMOWIENIE_NAPRAWY VALUES (NULL, '$user', (SELECT ID_KOMPUTERA from KOMPUTERY where NR_SERYJNY like '$komp_numer') , '$komp_opis', sysdate , NULL , 'nowy')");
 
 					$r = oci_execute($stid);
 				
